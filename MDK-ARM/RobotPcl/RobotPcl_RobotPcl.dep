@@ -48,7 +48,7 @@ I (..\platform\platform_init.h)(0x6A6C5A9C)
 I (..\device\dv_motor_base.h)(0x6A72D3D5)
 I (..\device\dv_motor_can.h)(0x6A71465E)
 I (..\..\RobotPcl\platform\platform_can_bridge.h)(0x6A71465E)
-I (..\GlobalComponent\pid.h)(0x6A7BDFA0)
+I (..\GlobalComponent\pid.h)(0x6A7C0A1B)
 F (../Src/gpio.c)(0x6A684AF9)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I ../Drivers/CMSIS/Include -I ../../RobotPcl -I ../platform -I ../GlobalComponent -I ../device-I./RTE/_RobotPcl-IE:/Keil_v5/pack/ARM/CMSIS/5.9.0/CMSIS/Core/Include-D__UVISION_VERSION="538" -D_RTE_ -DSTM32G474xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32G474xx -D__FPU_PRESENT="1U" -D__FPU_USED="1U"-o robotpcl/gpio.o -MD)
 I (..\Inc\gpio.h)(0x6A684849)
 I (..\Inc\main.h)(0x6A68484A)
@@ -1049,8 +1049,8 @@ F (..\GlobalComponent\initcall.c)(0x6A703C1B)(-xc -std=gnu11 --target=arm-arm-no
 I (..\GlobalComponent\initcall.h)(0x6A714729)
 I (E:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x63884908)
 I (E:\Keil_v5\ARM\ARMCLANG\include\stdio.h)(0x63884908)
-F (..\GlobalComponent\pid.c)(0x6A7BDFB5)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Weverything -Wno-packed -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I ../Drivers/CMSIS/Include -I ../../RobotPcl -I ../platform -I ../GlobalComponent -I ../device-I./RTE/_RobotPcl-IE:/Keil_v5/pack/ARM/CMSIS/5.9.0/CMSIS/Core/Include-D__UVISION_VERSION="538" -D_RTE_ -DSTM32G474xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32G474xx -D__FPU_PRESENT="1U" -D__FPU_USED="1U"-o robotpcl/pid.o -MD)
-I (..\GlobalComponent\pid.h)(0x6A7BDFA0)
+F (..\GlobalComponent\pid.c)(0x6A7C12EE)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Weverything -Wno-packed -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I ../Drivers/CMSIS/Include -I ../../RobotPcl -I ../platform -I ../GlobalComponent -I ../device-I./RTE/_RobotPcl-IE:/Keil_v5/pack/ARM/CMSIS/5.9.0/CMSIS/Core/Include-D__UVISION_VERSION="538" -D_RTE_ -DSTM32G474xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32G474xx -D__FPU_PRESENT="1U" -D__FPU_USED="1U"-o robotpcl/pid.o -MD)
+I (..\GlobalComponent\pid.h)(0x6A7C0A1B)
 I (E:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x63884908)
 I (E:\Keil_v5\ARM\ARMCLANG\include\math.h)(0x63884908)
 I (E:\Keil_v5\ARM\ARMCLANG\include\string.h)(0x63884908)

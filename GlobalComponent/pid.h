@@ -141,7 +141,6 @@ void PID_SetIntegralThreshold(PID_Handle_t *pid, float threshold);
  */
 void PID_SetDerivativeFilter(PID_Handle_t *pid, float filter);
 
-/* ==================== 核心计算接口 ==================== */
 
 /**
  * @brief PID统一计算入口
@@ -156,7 +155,6 @@ void PID_SetDerivativeFilter(PID_Handle_t *pid, float filter);
  */
 float PID_Calculate(PID_Handle_t *pid, float actual_val);
 
-/* ==================== 状态管理接口 ==================== */
 
 /**
  * @brief 完全复位 - 清空全部运行状态，保留配置

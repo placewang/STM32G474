@@ -91,19 +91,20 @@ static float apply_output_rate_limit(const PID_Handle_t *pid,
 {
     float max_step;
 
-    if (pid->output_rate_max <= 0.0f) {
+    if (pid->output_rate_max <= 0.0f) 
+	{
         return requested;  /* 限速关闭 */
     }
 
     max_step = pid->output_rate_max * pid->Ts;
-    if (!pid_isfinitef(max_step) || max_step <= 0.0f) {
+    if (!pid_isfinitef(max_step) || max_step <= 0.0f) 
+	{
         return requested;  /* 异常配置兜底 */
     }
 
     return CLAMP(requested, previous - max_step, previous + max_step);
 }
 
-/* ==================== 公开接口 ==================== */
 
 /**
  * @brief PID控制器初始化
