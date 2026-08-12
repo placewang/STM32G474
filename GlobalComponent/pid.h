@@ -3,18 +3,21 @@
 
 #include <stdint.h>
 
-typedef enum {
+typedef enum
+{
     PID_MODE_POSITION = 0,                /* 位置式：返回限幅后的绝对输出 */
     PID_MODE_INCREMENTAL = 1              /* 增量式：返回本周期实际生效的输出增量 */
 } PID_Mode_t;
 
-typedef enum {
+typedef enum
+{
     PID_STATUS_OK = 0,                    /* 操作成功 */
     PID_STATUS_INVALID_ARGUMENT = -1,     /* 句柄无效或输入为 NaN/无穷大 */
     PID_STATUS_TRACKING_LIMITED = 1       /* 无扰跟踪受输出或积分限幅约束 */
 } PID_Status_t;
 
-typedef struct {
+typedef struct 
+{
     float Kp;
     float Ki;
     float Kd;
@@ -22,7 +25,7 @@ typedef struct {
 
     float out_max;
     float out_min;
-    /* 输出最大变化率，单位为“输出单位/秒”<= 0 表示关闭限速 */
+    /* 输出最大变化率,单位为“输出单位/秒”<= 0 表示关闭限速 */
     float output_rate_max;
     float integral_max;
     float integral_min;
@@ -67,7 +70,7 @@ void PID_SetDerivativeFilter(PID_Handle_t *pid, float filter);
  * PID 统一计算入口。
  * 位置式返回限幅、限速后的绝对输出。
  * 增量式返回限幅、限速后实际生效的增量；调用方累加该返回值后，
- * 其执行器命令可与 pid->out 保持一致。
+ * 其执行器命令可与 pid->out 保持一致
  * actual_val 非有限数时不污染内部历史状态：位置式保持原输出，
  * 增量式返回 0 增量
  */
@@ -80,7 +83,8 @@ void PID_Reset(PID_Handle_t *pid);
  * 按当前测量值和执行器命令重建运行状态，用于手动/自动切换或运行中恢复。
  * 位置式会反算积分状态以尽量实现无扰接管；增量式直接跟踪当前输出
  * 若当前输出越限，或位置式受积分限幅约束而无法精确反算，函数仍完成
- * 最接近的安全初始化，但返回 PID_STATUS_TRACKING_LIMITED 提醒调用方*/
+ * 最接近的安全初始化，但返回 PID_STATUS_TRACKING_LIMITED
+ */
 PID_Status_t PID_ResetTracking(PID_Handle_t *pid,
                                float actual_val,
                                float current_output);

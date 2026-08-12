@@ -6,13 +6,16 @@
 #define PID_EPSILON 1e-12f
 #define CLAMP(x, low, high) ((x) > (high) ? (high) : ((x) < (low) ? (low) : (x)))
 
+/*
+判断一个单精度浮点数是否为有限值
+	return 1 表示 x 是有限数
+		   0 表示 x 是无穷大(±∞)或 NaN(非数)
+*/
 static inline int pid_isfinitef(float x)
 {
     union {float f;uint32_t u;} value;
 
-    /* keil 的 float 为 IEEE-754 binary32。直接检查指数位可避免部分
-     * 指数全为 1 表示 NaN 或正负无穷，其余编码均为有限值
-     */
+    /* 指数全为 1 表示 NaN 或正负无穷，其余编码均为有限值 */
     value.f = x;
     return (value.u & UINT32_C(0x7F800000))
            != UINT32_C(0x7F800000);
@@ -22,7 +25,10 @@ static int valid_handle(const PID_Handle_t *pid)
 {
     return pid != NULL && pid->initialized != 0U;
 }
-/* 相对+绝对容差，避免浮点舍入导致边界状态误报*/
+/* 
+判断两个浮点数是否近似相等
+相对+绝对容差，避免浮点舍入导致边界状态误报
+*/
 static int nearly_equal(float a, float b)
 {
     float scale = fmaxf(1.0f, fmaxf(fabsf(a), fabsf(b)));
@@ -32,7 +38,8 @@ static int nearly_equal(float a, float b)
 /* 死区内直接认为误差为零；死区外扣除阈值，避免边界处突然跳变*/
 static float apply_deadband(const PID_Handle_t *pid, float err)
 {
-    if (fabsf(err) <= pid->deadband) {
+    if (fabsf(err) <= pid->deadband)
+	{
         return 0.0f;
     }
     return err - copysignf(pid->deadband, err);
@@ -53,14 +60,14 @@ static float apply_output_rate_limit(const PID_Handle_t *pid,
 {
     float max_step;
 
-    if (pid->output_rate_max <= 0.0f) {
-        /* 默认关闭限速，保持传统 PID 的即时输出行为 */
+    if (pid->output_rate_max <= 0.0f)
+	{/* 默认关闭限速，保持传统 PID 的即时输出行为 */
         return requested;
     }
 
     max_step = pid->output_rate_max * pid->Ts;
-    if (!pid_isfinitef(max_step) || max_step <= 0.0f) {
-        /* 防止异常配置或浮点溢出导致输出被错误锁死*/
+    if (!pid_isfinitef(max_step) || max_step <= 0.0f)
+	{/* 防止异常配置或浮点溢出导致输出被错误锁死*/
         return requested;
     }
 
@@ -98,7 +105,11 @@ void PID_Init(PID_Handle_t *pid, PID_Mode_t mode, float Ts)
 void PID_SetParam(PID_Handle_t *pid, float kp, float ki, float kd)
 {
     /* 非有限参数直接拒绝，避免 NaN 沿计算链路扩散 */
-    if (!valid_handle(pid) || !pid_isfinitef(kp) || !pid_isfinitef(ki) || !pid_isfinitef(kd)) {
+    if (!valid_handle(pid) ||
+		!pid_isfinitef(kp) || 
+		!pid_isfinitef(ki) || 
+		!pid_isfinitef(kd))
+	{
         return;
     }
 
@@ -106,14 +117,17 @@ void PID_SetParam(PID_Handle_t *pid, float kp, float ki, float kd)
     pid->Ki = ki;
     pid->Kd = kd;
 
-    if (fabsf(ki) < PID_EPSILON) {
+    if (fabsf(ki) < PID_EPSILON)
+	{
         pid->integral = 0.0f;
     }
 }
 
 void PID_SetTarget(PID_Handle_t *pid, float target)
 {
-    if (!valid_handle(pid) || !pid_isfinitef(target)) {
+    if (!valid_handle(pid) ||
+		!pid_isfinitef(target)) 
+	{
         return;
     }
     pid->target_val = target;
@@ -123,12 +137,15 @@ void PID_SetOutputLimit(PID_Handle_t *pid, float max, float min)
 {
     float temp;
 
-    if (!valid_handle(pid) || !pid_isfinitef(max) || !pid_isfinitef(min)) {
+    if (!valid_handle(pid) ||
+		!pid_isfinitef(max)||
+		!pid_isfinitef(min))
+	{
         return;
     }
 
-    if (max < min) {
-        /* 调用者参数顺序传反时自动纠正，而不是产生非法区间 */
+    if (max < min) 
+	{/* 调用者参数顺序传反时自动纠正，而不是产生非法区间 */
         temp = max;
         max = min;
         min = temp;
@@ -143,7 +160,8 @@ void PID_SetOutputLimit(PID_Handle_t *pid, float max, float min)
 void PID_SetOutputRateLimit(PID_Handle_t *pid, float rate_max)
 {
     /* 非有限值保持原配置；非正值用于显式关闭输出限速*/
-    if (!valid_handle(pid) || !pid_isfinitef(rate_max)) {
+    if (!valid_handle(pid) || !pid_isfinitef(rate_max)) 
+	{
         return;
     }
     pid->output_rate_max = rate_max > 0.0f ? rate_max : 0.0f;
@@ -153,11 +171,13 @@ void PID_SetIntegralLimit(PID_Handle_t *pid, float max, float min)
 {
     float temp;
 
-    if (!valid_handle(pid) || !pid_isfinitef(max) || !pid_isfinitef(min)) {
+    if (!valid_handle(pid) || !pid_isfinitef(max) || !pid_isfinitef(min))
+	{
         return;
     }
 
-    if (max < min) {
+    if (max < min)
+	{
         temp = max;
         max = min;
         min = temp;
@@ -165,21 +185,23 @@ void PID_SetIntegralLimit(PID_Handle_t *pid, float max, float min)
 
     pid->integral_max = max;
     pid->integral_min = min;
-    /* 新限幅立即作用于已有积分状态 */
+    /* 限幅立即作用于已有积分状态 */
     pid->integral = CLAMP(pid->integral, min, max);
 }
 
 void PID_SetDeadband(PID_Handle_t *pid, float deadband)
 {
-    if (!valid_handle(pid) || !pid_isfinitef(deadband)) {
-        return;
+    if (!valid_handle(pid) || !pid_isfinitef(deadband)) 
+	{
+		return;
     }
     pid->deadband = deadband > 0.0f ? deadband : 0.0f;
 }
 
 void PID_SetIntegralThreshold(PID_Handle_t *pid, float threshold)
 {
-    if (!valid_handle(pid) || !pid_isfinitef(threshold)) {
+    if (!valid_handle(pid) || !pid_isfinitef(threshold)) 
+	{
         return;
     }
     /* 非正阈值按“不启用积分分离”处理*/
@@ -188,7 +210,8 @@ void PID_SetIntegralThreshold(PID_Handle_t *pid, float threshold)
 
 void PID_SetDerivativeFilter(PID_Handle_t *pid, float filter)
 {
-    if (!valid_handle(pid) || !pid_isfinitef(filter)) {
+    if (!valid_handle(pid) || !pid_isfinitef(filter)) 
+	{
         return;
     }
     /* 超范围参数自动夹紧，保证一阶滤波器始终稳定*/
@@ -203,8 +226,8 @@ static float calculate_position(PID_Handle_t *pid, float actual_val)
     float rate_limited_output;
     float integral_delta_output;
 
-    if (!pid_isfinitef(actual_val)) {
-        /* 位置式保持上一次安全输出，并且不更新历史误差*/
+    if (!pid_isfinitef(actual_val)) 
+	{/* 位置式保持上一次安全输出并且不更新历史误差*/
         return pid->out;
     }
 
@@ -212,18 +235,18 @@ static float calculate_position(PID_Handle_t *pid, float actual_val)
     pid->err = apply_deadband(pid, pid->target_val - actual_val);
 
     if (pid->first_run != 0U)
-	{
-        /* 首次没有可靠的测量历史，D 项置零，避免伪造启动冲击 */
-        filtered_derivative = 0.0f;  }
-	else {
-        /* 对测量值微分，避免目标值阶跃造成微分冲击*/
+	{/* 首次没有可靠的测量历史，D 项置零，避免伪造启动冲击 */
+        filtered_derivative = 0.0f;  
+	}
+	else
+	{ /*对测量值微分，避免目标值阶跃造成微分冲击*/
         float raw_derivative = -(actual_val - pid->actual_last) / pid->Ts;
         filtered_derivative = filter_derivative(pid, raw_derivative);
     }
 
     if (fabsf(pid->Ki) >= PID_EPSILON
-        && fabsf(pid->err) < pid->integral_threshold) {
-        /* 积分按秒计量；误差过大时暂停积分，防止启动阶段积压 */
+        && fabsf(pid->err) < pid->integral_threshold) 
+	{/* 积分按秒计量；误差过大时暂停积分，防止启动阶段积压 */
         pid->integral = CLAMP(pid->integral + pid->err * pid->Ts,
                               pid->integral_min, pid->integral_max);
     }
@@ -234,8 +257,8 @@ static float calculate_position(PID_Handle_t *pid, float actual_val)
 
     integral_delta_output = pid->Ki * (pid->integral - integral_old);
     if ((candidate_output > pid->out_max && integral_delta_output > 0.0f)
-        || (candidate_output < pid->out_min && integral_delta_output < 0.0f)) {
-        /* 输出已饱和且积分仍向饱和方向推动时，撤销本次积分*/
+        || (candidate_output < pid->out_min && integral_delta_output < 0.0f)) 
+	{/* 输出已饱和且积分仍向饱和方向推动时，撤销本次积分*/
         pid->integral = integral_old;
         candidate_output -= integral_delta_output;
         integral_delta_output = 0.0f;
@@ -243,8 +266,8 @@ static float calculate_position(PID_Handle_t *pid, float actual_val)
 
     rate_limited_output = apply_output_rate_limit(pid, candidate_output, pid->out);
     if ((rate_limited_output < candidate_output && integral_delta_output > 0.0f)
-        || (rate_limited_output > candidate_output && integral_delta_output < 0.0f)) {
-        /* 输出变化率受限也视作一种饱和，防止积分在限速期间继续堆积*/
+        || (rate_limited_output > candidate_output && integral_delta_output < 0.0f)) 
+	{/* 输出变化率受限也视作一种饱和，防止积分在限速期间继续堆积*/
         pid->integral = integral_old;
         candidate_output -= integral_delta_output;
         rate_limited_output = apply_output_rate_limit(pid, candidate_output,
@@ -268,8 +291,8 @@ static float calculate_incremental(PID_Handle_t *pid, float actual_val)
     float applied_delta;
     float derivative_delta = 0.0f;
 
-    if (!pid_isfinitef(actual_val)) {
-        /* 无效反馈不能生成增量，否则会破坏调用方维护的执行器命令*/
+    if (!pid_isfinitef(actual_val))
+	{/* 无效反馈不能生成增量，否则会破坏调用方维护的执行器命令*/
         return 0.0f;
     }
 
@@ -277,12 +300,13 @@ static float calculate_incremental(PID_Handle_t *pid, float actual_val)
     pid->err = apply_deadband(pid, pid->target_val - actual_val);
 
     if (pid->first_run != 0U) 
-	{
-        /* 初始化测量历史使首次 D 项为零，但保留 err_last=0，
-         * 让首次 P 项产生从内部输出零值出发的合理启动增量*/
+	{/* 初始化测量历史使首次 D 项为零，但保留 err_last=0，
+      * 让首次 P 项产生从内部输出零值出发的合理启动增量*/
         pid->actual_last = actual_val;
-        pid->actual_prev = actual_val; }
-	else {
+        pid->actual_prev = actual_val;
+	}
+	else 
+	{
         float previous_derivative = pid->derivative;
         float raw_derivative = -(actual_val - pid->actual_last) / pid->Ts;
         float current_derivative = filter_derivative(pid, raw_derivative);
@@ -294,7 +318,7 @@ static float calculate_incremental(PID_Handle_t *pid, float actual_val)
                  + derivative_delta;
 
     old_output = pid->out;
-    /* 返回限幅/限速后真正生效的增量，而不是理论计算增量。 */
+    /* 返回限幅/限速后真正生效的增量，而不是理论计算增量 */
     delta_output = apply_output_rate_limit(pid, old_output + delta_output,
                                            old_output) - old_output;
     pid->out = CLAMP(old_output + delta_output, pid->out_min, pid->out_max);
@@ -312,26 +336,26 @@ static float calculate_incremental(PID_Handle_t *pid, float actual_val)
 
 float PID_Calculate(PID_Handle_t *pid, float actual_val)
 {
-    if (!valid_handle(pid)) {
-        /* 无有效控制器时返回中性值，不尝试访问任何状态 */
+    if (!valid_handle(pid)) 
+	{/* 无有效控制器时返回中性值，不尝试访问任何状态 */
         return 0.0f;
     }
-
-    if (pid->mode == PID_MODE_POSITION) {
+    if (pid->mode == PID_MODE_POSITION)
+	{
         return calculate_position(pid, actual_val);
     }
-    if (pid->mode == PID_MODE_INCREMENTAL) {
+    if (pid->mode == PID_MODE_INCREMENTAL)
+	{
         return calculate_incremental(pid, actual_val);
     }
-
     /* 结构体被外部误改时保持当前输出，禁止误入其他算法*/
     return pid->out;
 }
 
 void PID_Reset(PID_Handle_t *pid)
 {
-    if (!valid_handle(pid)) {
-        /* Reset 对无效句柄保持幂等，不产生副作用 */
+    if (!valid_handle(pid)) 
+	{/* Reset 对无效句柄保持幂等，不产生副作用 */
         return;
     }
 
@@ -360,15 +384,13 @@ PID_Status_t PID_ResetTracking(PID_Handle_t *pid,
     if (!valid_handle(pid)
         || !pid_isfinitef(actual_val)
         || !pid_isfinitef(current_output)) 
-	{
-        /* 无效输入时不修改任何状态，交由调用方处理错误*/
+	{/* 无效输入时不修改任何状态，交由调用方处理错误*/
         return PID_STATUS_INVALID_ARGUMENT;
     }
 
     tracked_output = CLAMP(current_output, pid->out_min, pid->out_max);
     if (!nearly_equal(tracked_output, current_output)) 
-	{
-        /* 执行器命令本身越限时先夹紧，并通过返回状态通知调用方*/
+	{/* 执行器命令本身越限时先夹紧，并通过返回状态通知调用方*/
         status = PID_STATUS_TRACKING_LIMITED;
     }
 
