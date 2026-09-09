@@ -1,8 +1,9 @@
 /* SPDX-License-Identifier: MIT */
+
 /*
  * platform_init.c - platform 层 ops 表注册
  * 注册, 注册的 ops 表不同而已.
- */
+*/
 
 
 #include "initcall.h"

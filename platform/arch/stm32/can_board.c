@@ -1,6 +1,6 @@
 #include "fdcan.h"
 
-#include "initcall.h"
+//#include "initcall.h"
 #include "platform/platform_can_bridge.h"
 
 #define  True  1

@@ -33,5 +33,4 @@ robotpcl/can_board.o: ..\platform\arch\stm32\can_board.c ..\Inc\fdcan.h \
   ..\Drivers\STM32G4xx_HAL_Driver\Inc\stm32g4xx_hal_tim_ex.h \
   ..\Drivers\STM32G4xx_HAL_Driver\Inc\stm32g4xx_hal_uart.h \
   ..\Drivers\STM32G4xx_HAL_Driver\Inc\stm32g4xx_hal_uart_ex.h \
-  ..\GlobalComponent\initcall.h \
   ..\..\RobotPcl\platform\platform_can_bridge.h

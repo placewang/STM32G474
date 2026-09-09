@@ -46,7 +46,7 @@ int platform_can_receive(platform_can_client *dev,
 						 uint8_t *data,uint32_t* len)
 {
     int  rv=0;
-    if (!dev || !dev->bus || !dev->bus->ops->send || !data)
+    if (!dev || !dev->bus || !dev->bus->ops->receive || !data)
     { 
 		return -1;
     }
